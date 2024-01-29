@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>index</title>
+    <title>購物頁面</title>
   </head>
   <body>
     <div id="app">
@@ -47,7 +47,12 @@
                       <button type="button" class="btn btn-outline-success">
                         查看更多
                       </button>
-                      <button type="button" class="btn btn-outline-danger">
+
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        @click="addCartProduct(product.id)"
+                      >
                         加入購物車
                       </button>
                     </div>
@@ -69,28 +74,33 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>x</td>
-                  <!-- 點擊商品加入購物車會把product賦予tempProduct -->
-                  <td>tempProduct.title</td>
-                  <td>
-                    <div class="input-group mb-3">
+                <tr v-for="item in carts" :key="item.title">
+                  <td width="50">x</td>
+                  <td width="100">{{ item.product.title }}</td>
+                  <td width="100">
+                    <div class="input-group">
                       <input
-                        type="text"
-                        class="form-control"
+                        type="number"
+                        class="form-control border-success"
                         aria-label="Amount (to the nearest dollar)"
+                        :value="item.qty"
                       />
-                      <span class="input-group-text">tempProduct.unit</span>
+                      <span
+                        class="input-group-text bg-success text-white border-success"
+                        >{{ item.product.unit }}</span
+                      >
                     </div>
                   </td>
-                  <td>tempProduct.price</td>
+                  <td width="50">{{ `$ ${item.product.price}` }}</td>
                   <!-- 可能要用 product 跑 forEach 把對應的 cart 的 id 比對後，做數量增減 -->
-                  <td class="text-end">tempProduct.price * cartQty</td>
+                  <td width="50" class="text-end">
+                    {{ `$ ${item.final_total}` }}
+                  </td>
                 </tr>
               </tbody>
               <tfoot>
                 <td colspan="4" class="text-end">總計</td>
-                <td class="text-end">100</td>
+                <td class="text-end">{{ `$ ${total}` }}</td>
               </tfoot>
             </table>
             <!-- 驗證表單 -->
