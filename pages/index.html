@@ -7,51 +7,151 @@
     <title>index</title>
   </head>
   <body>
-    <%- include('./layout/header'); -%>
-
-    <h1 class="index-title">我是首頁</h1>
-
-    <div class="card" style="width: 18rem">
-      <img src="../assets/images/cat.jpg" class="card-img-top" alt="cat" />
-      <div class="card-body">
-        <h5 class="card-title">卡片元件</h5>
-        <p class="card-text">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, odit, iusto odio assumenda alias id
-          nobis earum!
-        </p>
-      </div>
-    </div>
-
-    <!-- Modal 按鈕 -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-      打開 modal
-    </button>
-
-    <!-- Modal 元件 -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal 標題</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div id="app">
+      <div class="container">
+        <div class="row my-3">
+          <!-- 商品列表 -->
+          <div class="col-md-6">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th width="100" scope="col">圖片</th>
+                  <th width="100" scope="col">商品名稱</th>
+                  <th width="100" scope="col">價格</th>
+                  <th width="200" scope="col">編輯</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="product in products" :key="product.id">
+                  <td>
+                    <img
+                      :src="product.imageUrl"
+                      :alt="product.title"
+                      class="table-img rounded-circle obj-fit-cover obj-position-center"
+                    />
+                  </td>
+                  <td>{{product.title}}</td>
+                  <td>
+                    <span class="text-decoration-line-through me-2"
+                      >{{`原價 $ ${product.origin_price} 元` }}</span
+                    ><span class="text-danger"
+                      >{{`特價 $ ${product.price} 元`}}</span
+                    >
+                  </td>
+                  <td>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic example"
+                    >
+                      <button type="button" class="btn btn-outline-success">
+                        查看更多
+                      </button>
+                      <button type="button" class="btn btn-outline-danger">
+                        加入購物車
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="modal-body">內容</div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-            <button type="button" class="btn btn-primary">確定</button>
+          <div class="col-md-6">
+            <!-- 購物車列表 -->
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>品名</th>
+                  <th>數量/單位</th>
+                  <th>單價</th>
+                  <th>小計</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>x</td>
+                  <!-- 點擊商品加入購物車會把product賦予tempProduct -->
+                  <td>tempProduct.title</td>
+                  <td>
+                    <div class="input-group mb-3">
+                      <input
+                        type="text"
+                        class="form-control"
+                        aria-label="Amount (to the nearest dollar)"
+                      />
+                      <span class="input-group-text">tempProduct.unit</span>
+                    </div>
+                  </td>
+                  <td>tempProduct.price</td>
+                  <!-- 可能要用 product 跑 forEach 把對應的 cart 的 id 比對後，做數量增減 -->
+                  <td class="text-end">tempProduct.price * cartQty</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <td colspan="4" class="text-end">總計</td>
+                <td class="text-end">100</td>
+              </tfoot>
+            </table>
+            <!-- 驗證表單 -->
+            <form>
+              <div class="mb-3">
+                <label for="inputEmail1" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="inputEmail1"
+                  aria-describedby="emailHelp"
+                  placeholder="請輸入 Email"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="inputName" class="form-label">收件人姓名</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputName"
+                  placeholder="請輸入姓名"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="inputTel">收件人電話</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputTel"
+                  placeholder="請輸入電話"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="inputAddress">收件人地址</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputAddress"
+                  placeholder="請輸入地址"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label"
+                  >留言</label
+                >
+                <textarea
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="10"
+                ></textarea>
+              </div>
+              <div class="text-end">
+                <button type="submit" class="btn btn-success">送出訂單</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
 
-    <%- include('./layout/footer'); -%>
-
     <script type="module" src="../main.js"></script>
+    <script type="module" src="../assets/js/index.js"></script>
   </body>
 </html>

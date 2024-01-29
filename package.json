@@ -15,11 +15,16 @@
     "vite-plugin-ejs": "^1.6.4"
   },
   "dependencies": {
+    "@vee-validate/i18n": "^4.12.4",
+    "@vee-validate/rules": "^4.12.4",
+    "axios": "^1.6.7",
     "bootstrap": "^5.2.3",
     "gh-pages": "^5.0.0",
     "glob": "^10.2.2",
     "sass": "^1.61.0",
     "sass-loader": "^13.2.2",
+    "sweetalert2": "^11.10.4",
+    "vee-validate": "^4.12.4",
     "vite-plugin-live-reload": "^3.0.2"
   }
 }
