@@ -139,7 +139,7 @@
               </tfoot>
             </table>
             <!-- 驗證表單 -->
-            <v-form v-slot="{ errors }" @submit="submitOrder">
+            <v-form ref="form" v-slot="{ errors }" @submit="submitOrder">
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <v-field
@@ -149,7 +149,7 @@
                   class="form-control"
                   :class="{ 'is-invalid': errors['email'] }"
                   rules="email|required"
-                  v-model="form.user.email"
+                  v-model="form.data.user.email"
                   placeholder="請輸入 Email"
                 ></v-field>
                 <error-message
@@ -166,7 +166,7 @@
                   class="form-control"
                   :class="{ 'is-invalid': errors['姓名'] }"
                   rules="required"
-                  v-model="form.user.name"
+                  v-model="form.data.user.name"
                   placeholder="請輸入姓名"
                 ></v-field>
                 <error-message
@@ -179,11 +179,11 @@
                 <v-field
                   id="tel"
                   name="電話"
-                  type="text"
+                  type="tel"
                   class="form-control"
                   :class="{ 'is-invalid': errors['電話'] }"
                   :rules="isPhone"
-                  v-model="form.user.tel"
+                  v-model="form.data.user.tel"
                   placeholder="請輸入電話"
                 ></v-field>
                 <error-message
@@ -200,7 +200,7 @@
                   class="form-control"
                   :class="{ 'is-invalid': errors['地址'] }"
                   rules="required"
-                  v-model="form.user.address"
+                  v-model="form.data.user.address"
                   placeholder="請輸入地址"
                 ></v-field>
                 <error-message
@@ -218,7 +218,7 @@
                   :class="{ 'is-invalid': errors['留言'] }"
                   rules="required|min:10|max:250"
                   rows="10"
-                  v-model="form.message"
+                  v-model="form.data.message"
                   as="textarea"
                 ></v-field>
                 <error-message
@@ -234,80 +234,12 @@
         </div>
       </div>
 
-      <!-- Modal -->
-      <div
-        class="modal fade"
-        id="detailModal"
+      <!-- 查看更多跳出視窗 modal -->
+      <detail-Modal
         ref="detailModal"
-        tabindex="-1"
-        aria-labelledby="detailModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header text-white bg-success">
-              <h1 class="modal-title fs-5" id="detailModalLabel">
-                {{ detailProduct.title }}
-              </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="row align-items-center">
-                <div class="col-md-4 d-flex justify-content-center mb-3">
-                  <img
-                    class="table-img obj-fit-cover obj-position-center rounded-circle"
-                    :src="detailProduct.imageUrl"
-                    :alt="detailProduct.title"
-                  />
-                </div>
-                <div class="col-md-8">
-                  <span class="fs-6 badge rounded-pill text-bg-success mb-3"
-                    >{{ detailProduct.category }}</span
-                  >
-                  <p>商品描述：{{ detailProduct.description }}</p>
-                  <p>商品內容：{{ detailProduct.content }}</p>
-                  <p>商品售價：{{ detailProduct.price }}</p>
-                  <div class="input-group w-50">
-                    <input
-                      type="number"
-                      min="1"
-                      class="form-control border-success"
-                      v-model.number="qty"
-                    />
-                    <span
-                      class="input-group-text bg-success text-white border-success"
-                      >{{ detailProduct.unit }}</span
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                關閉更多
-              </button>
-              <!-- addCartProduct 會自動加總數量，所以不用使用到 put -->
-              <button
-                type="button"
-                class="btn btn-danger"
-                @click="addCartProduct(detailProduct.id, qty)"
-              >
-                加入購物車
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+        :product="detailProduct"
+        @add-to-cart="addCartProduct"
+      ></detail-Modal>
     </div>
 
     <script type="module" src="../main.js"></script>

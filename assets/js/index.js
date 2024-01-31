@@ -2,6 +2,8 @@
 // 用 esm 方式載入 Vue 會 VeeValidate 出錯，因此使用一般 CDN
 // import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
 
+import detailModal from "./detailModal";
+
 // vue-loading
 import { LoadingPlugin } from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
@@ -49,21 +51,19 @@ const app = Vue.createApp({
 
       // 購物車資料
       carts: [],
-
-      detailModal: null,
       detailProduct: {},
-      // 查看更多的商品數量，不宣告該變數畫面仍可以動，但會跳黃字警告
-      qty: 1,
 
       // 表單 post 資訊
       form: {
-        user: {
-          name: "",
-          email: "",
-          tel: "",
-          address: "",
+        data: {
+          user: {
+            name: "",
+            email: "",
+            tel: "",
+            address: "",
+          },
+          message: "",
         },
-        message: "",
       },
     };
   },
@@ -71,11 +71,13 @@ const app = Vue.createApp({
     VForm: Form,
     VField: Field,
     ErrorMessage: ErrorMessage,
+    detailModal,
   },
   methods: {
+    // product 物件為所有商品中的某一項，點擊查看更多後，會把 product 賦予給 detailProduct，再透過 props 傳到 detailModal，進而渲染 detailModal 介面
     openModal(product) {
-      this.detailModal.show();
       this.detailProduct = product;
+      this.$refs.detailModal.openModal();
     },
     getProductData() {
       axios
@@ -92,6 +94,7 @@ const app = Vue.createApp({
           });
         });
     },
+    // 如果透過「查看更多」視窗(detailModal)觸發會使用到 emit，如果透過「加入購物車」按鈕會傳入 productId，而 qty 使用預設值 1
     addCartProduct(productId, qty = 1) {
       const data = {
         data: {
@@ -105,7 +108,8 @@ const app = Vue.createApp({
           // 呼叫載入效果
           let loader = this.$loading.show();
 
-          this.detailModal.hide();
+          // 可以用外層 DOM 呼叫內層元件方法
+          this.$refs.detailModal.closeModal();
 
           // loader 傳入 getCart，等取得購物車後把載入效果關閉
           this.getCart(loader);
@@ -251,13 +255,38 @@ const app = Vue.createApp({
       const phoneNumber = /^(09)[0-9]{8}$/;
       return phoneNumber.test(value) ? true : "需要正確的電話號碼";
     },
+    // 提交訂單後會自動清空購物車
     submitOrder() {
       axios
-        .post(`${url}/${apiPath}/order`, this.data)
+        .post(`${url}/${apiPath}/order`, this.form)
         .then((res) => {
-          console.log(res);
+          let loader = this.$loading.show();
+
+          //   用 ref 抓取表單 DOM，在提交成功後清空表單
+          this.$refs.form.resetForm();
+          this.getCart();
+
+          setTimeout(() => {
+            loader.hide();
+          }, 800);
+
+          setTimeout(() => {
+            Swal.fire({
+              title: `${res.data.message}`,
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }, 1200);
         })
-        .catch((err) => alert(err.response.message));
+        .catch((err) => {
+          Swal.fire({
+            title: `${err.response.data.message}`,
+            icon: "warning",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        });
     },
   },
   computed: {
@@ -269,7 +298,6 @@ const app = Vue.createApp({
     },
   },
   mounted() {
-    this.detailModal = new bootstrap.Modal(this.$refs.detailModal);
     this.getProductData();
     this.getCart();
   },
