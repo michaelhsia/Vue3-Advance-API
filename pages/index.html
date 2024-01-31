@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- google font -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
     <title>購物頁面</title>
   </head>
   <body>
@@ -74,8 +80,16 @@
                 </tr>
               </thead>
               <tbody>
+                <!-- item.id 與 item.product.id 不同，刪除購物車應該是用 cartId -->
                 <tr v-for="item in carts" :key="item.title">
-                  <td width="50">x</td>
+                  <td width="50">
+                    <a
+                      class="link-success link-opacity-10-hover"
+                      href="#"
+                      @click="delSingleCart(item.id)"
+                      ><span class="material-icons"> close </span></a
+                    >
+                  </td>
                   <td width="100">{{ item.product.title }}</td>
                   <td width="100">
                     <div class="input-group">
@@ -84,6 +98,7 @@
                         class="form-control border-success"
                         aria-label="Amount (to the nearest dollar)"
                         :value="item.qty"
+                        @change="(evt) => updateCartProduct(item.id, item.product.id, evt)"
                       />
                       <span
                         class="input-group-text bg-success text-white border-success"
@@ -99,8 +114,24 @@
                 </tr>
               </tbody>
               <tfoot>
-                <td colspan="4" class="text-end">總計</td>
-                <td class="text-end">{{ `$ ${total}` }}</td>
+                <template v-if="carts.length !== 0">
+                  <tr>
+                    <td colspan="2">
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        @click="delAllCart"
+                      >
+                        清除購物車
+                      </button>
+                    </td>
+                    <td colspan="2" class="text-end">總計</td>
+                    <td class="text-end">{{ `$ ${total}` }}</td>
+                  </tr>
+                </template>
+                <template v-else>
+                  <p class="text-secondary p-2">請先將商品加入購物車</p>
+                </template>
               </tfoot>
             </table>
             <!-- 驗證表單 -->
